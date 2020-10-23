@@ -202,6 +202,8 @@ struct repository {
         BOOL isServer;                    // Execute as server
         char serverIp[INET6_ADDRSTRLEN];  // Server IP address
         char *serverName;                 // Server hostname or IP address
+        char interfaceIp[INET6_ADDRSTRLEN];  // Interface IP address
+        char *interfaceName;                 // Interface hostname or IP address
         int hSpeedThresh;                 // Index of high-speed threshold
         int logFileSize;                  // Current log file size
         int endTimeStatus;                // Exit status when end time expires

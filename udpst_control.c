@@ -201,6 +201,13 @@ int send_setupreq(int connindex) {
 #endif
         }
 
+
+        if ((var = sock_mgmt(connindex, repo.interfaceIp, 0, NULL, SMA_BIND)) != 0) {
+                send_proc(errConn, scratch, var);
+                init_conn(i, TRUE);
+                return -1;
+        }
+
         //
         // Update global address info for subsequent send
         //
@@ -208,6 +215,7 @@ int send_setupreq(int connindex) {
                 send_proc(errConn, scratch, var);
                 return -1;
         }
+        
 
         //
         // Send setup request PDU (socket not yet connected)

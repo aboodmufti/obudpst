@@ -356,6 +356,7 @@ int main(int argc, char **argv) {
                                 appstatus = -1;
                                 sig_exit  = 1;
                         }
+                        
                 }
         }
 
@@ -555,7 +556,7 @@ void signal_exit(int signal) {
 //
 int proc_parameters(int argc, char **argv, int fd) {
         int i, var, value;
-        char *optstring = "ud46xevsjDSroa:m:I:t:P:p:b:L:U:F:c:h:q:l:k:?";
+        char *optstring = "ud46xevsjDSroa:m:I:t:P:p:b:L:U:F:c:h:q:l:k:B:?";
 
         //
         // Clear configuration and global repository data
@@ -862,6 +863,17 @@ int proc_parameters(int argc, char **argv, int fd) {
                         }
                         conf.logFileMax = value * 1000;
                         break;
+                case 'B':
+                        repo.interfaceName = optarg;
+                        if (repo.interfaceName != NULL) {
+                                if ((var = sock_mgmt(-1, repo.interfaceName, 0, repo.interfaceIp, SMA_LOOKUP)) != 0) {
+                                        send_proc(errConn, scratch, var);
+                                        appstatus = -1;
+                                        sig_exit  = 1;
+                                        return -1;
+                                }
+                        }
+                        break;
                 case '?':
                         var = sprintf(scratch,
                                       "%s\nUsage: %s [option]... [server]\n\n"
@@ -884,6 +896,7 @@ int proc_parameters(int argc, char **argv, int fd) {
                                       "       -r           Display loss ratio instead of delivered percentage\n"
                                       "(c)    -o           Use One-Way Delay instead of RTT for delay variation\n"
                                       "       -a key       Authentication key (%d characters max)\n"
+                                      "(c)    -B host      Bind to specific interface\n"
                                       "(m,v)  -m value     Packet marking octet (IP_TOS/IPV6_TCLASS) [Default %d]\n"
                                       "(m)    -I index     Index for static sending rate (see '-S') [Default <Auto>]\n"
                                       "(m)    -t time      Test interval time in seconds [Default %d, Max %d]\n"
